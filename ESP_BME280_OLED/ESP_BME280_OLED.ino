@@ -15,8 +15,8 @@ Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire);
  
 Adafruit_BME280 bme;                                    // Установка связи по интерфейсу I2C
  
-const char* ssid = "Wifika-extra";                       // Название Вашей WiFi сети
-const char* password = WIFI_PASSWORD;                   // Пароль от Вашей WiFi сети
+const char* ssid = WIFI_SSID;                           // Название WiFi сети
+const char* password = WIFI_PASSWORD;                   // Пароль от WiFi сети
  
 WiFiServer server(80);                                  // Указываем порт Web-сервера
 String header;
@@ -60,9 +60,9 @@ void setup() {
   Serial.println(WiFi.localIP());                       // Отправка в Serial port 
   server.begin();
   
-  display.setTextSize(1);             // Normal 1:1 pixel scale
-  display.setTextColor(SSD1306_WHITE);        // Draw white text
-  //display.setCursor(0,0);             // Start at top-left corner
+  display.setTextSize(1);                               // Normal 1:1 pixel scale
+  display.setTextColor(SSD1306_WHITE);                  // Draw white text
+  //display.setCursor(0,0);                             // Start at top-left corner
   //display.print(F("IP: "));
   //display.println(WiFi.localIP());
   //display.display();                                    
