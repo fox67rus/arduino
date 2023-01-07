@@ -5,6 +5,7 @@
 #include <Adafruit_SSD1306.h>
 #include <Adafruit_BME280.h>                            // Подключаем библиотеку Adafruit_BME280
 #include <Adafruit_Sensor.h>                            // Подключаем библиотеку Adafruit_Sensor
+#include "config.h"
 
 #define SCREEN_WIDTH 128 // OLED display width, in pixels
 #define SCREEN_HEIGHT 32 // OLED display height, in pixels
@@ -14,8 +15,8 @@ Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire);
  
 Adafruit_BME280 bme;                                    // Установка связи по интерфейсу I2C
  
-const char* ssid = "DAP-1360-sw";                       // Название Вашей WiFi сети
-const char* password = "88888888";                      // Пароль от Вашей WiFi сети
+const char* ssid = "Wifika-extra";                       // Название Вашей WiFi сети
+const char* password = WIFI_PASSWORD;                   // Пароль от Вашей WiFi сети
  
 WiFiServer server(80);                                  // Указываем порт Web-сервера
 String header;
@@ -98,7 +99,7 @@ void loop(){
             client.println("HTTP/1.1 200 OK");          // Стандартный заголовок HT
             client.println("Content-type:text/html ");
             client.println("Connection: close");        // Соединение будет закрыто после завершения ответа
-            client.println("Refresh: 10");              // Автоматическое обновление каждые 10 сек 
+            client.println("Refresh: 30");              // Автоматическое обновление каждые 30 сек 
             client.println();
             
             client.println("<!DOCTYPE html><html>");    // Веб-страница создается с использованием HTML
@@ -108,9 +109,9 @@ void loop(){
                      
             client.println("<style>body { text-align: center; font-family: \"Trebuchet MS\", Arial;}");
             client.println("table { border-collapse: collapse; width:40%; margin-left:auto; margin-right:auto; }");
-            client.println("th { padding: 12px; background-color: #0043af; color: white; }");
+            client.println("th { padding: 12px; background-color: #35d4c7; color: white; }");
             client.println("tr { border: 1px solid #ddd; padding: 12px; }");
-            client.println("tr:hover { background-color: #bcbcbc; }");
+            client.println("tr:hover { background-color: #8ad9d2; }");
             client.println("td { border: none; padding: 12px; }");
             client.println(".sensor { color:white; font-weight: bold; background-color: #bcbcbc; padding: 1px; }");
             
