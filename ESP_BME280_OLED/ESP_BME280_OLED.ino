@@ -35,7 +35,7 @@ void setup() {
   bool status;
                                                        
   if (!bme.begin(0x76)) {                               // Проверка инициализации датчика
-    Serial.println("Could not find a valid BME280 sensor, check wiring!"); // Печать, об ошибки инициализации.
+    Serial.println("Could not find a valid BME280 sensor, check wiring!"); // Печать ошибки инициализации.
     while (1);                                          // Зацикливаем
   }
 
@@ -43,7 +43,7 @@ void setup() {
     Serial.println(F("SSD1306 allocation failed"));
     for(;;); // Don't proceed, loop forever
   }
- // display.display();
+
   display.clearDisplay();
   
   Serial.print("Connecting to ");                       // Отправка в Serial port 
@@ -61,28 +61,25 @@ void setup() {
   server.begin();
   
   display.setTextSize(1);                               // Normal 1:1 pixel scale
-  display.setTextColor(SSD1306_WHITE);                  // Draw white text
-  //display.setCursor(0,0);                             // Start at top-left corner
-  //display.print(F("IP: "));
-  //display.println(WiFi.localIP());
-  //display.display();                                    
+  display.setTextColor(SSD1306_WHITE);                  // Draw white text                                 
 }
  
 void loop(){
  display.clearDisplay();
  display.setCursor(0,0); 
+   
   float temp = bme.readTemperature();
-  sTemp = "Temp: "+ floatToString(temp, 0) + " *C";
+  sTemp = "Temp: "+ floatToString(temp, 0) + " *";
   float humi = bme.readHumidity();
   sHumi = "Humi: "+ floatToString(humi, 0) + " %";
   float press = bme.readPressure() / 100.0F * 0.7501;
-  sPress = "Press: "+ floatToString(press, 0) + " mm.p.c.";
- // display.setCursor(0,16);             // Start at top-left corner
+  sPress = "Press: "+ floatToString(press, 0) + " mm";
+
   display.println(sTemp);
   display.println(sHumi);
   display.println(sPress);
-  display.display();    
-
+  display.println(WiFi.localIP());  
+  display.display();  
    
   WiFiClient client = server.available();               // Получаем данные, посылаемые клиентом 
  
@@ -99,12 +96,12 @@ void loop(){
             client.println("HTTP/1.1 200 OK");          // Стандартный заголовок HT
             client.println("Content-type:text/html ");
             client.println("Connection: close");        // Соединение будет закрыто после завершения ответа
-            client.println("Refresh: 30");              // Автоматическое обновление каждые 30 сек 
+            client.println("Refresh: 60");              // Автоматическое обновление каждые 60 сек 
             client.println();
             
             client.println("<!DOCTYPE html><html>");    // Веб-страница создается с использованием HTML
             client.println("<head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">");
-            client.println("<meta charset='UTF-8'>");   // Делаем русскую кодировку
+            client.println("<meta charset='UTF-8'>"); 
             client.println("<link rel=\"icon\" href=\"data:,\">");
                      
             client.println("<style>body { text-align: center; font-family: \"Trebuchet MS\", Arial;}");
@@ -113,19 +110,19 @@ void loop(){
             client.println("tr { border: 1px solid #ddd; padding: 12px; }");
             client.println("tr:hover { background-color: #8ad9d2; }");
             client.println("td { border: none; padding: 12px; }");
-            client.println(".sensor { color:white; font-weight: bold; background-color: #bcbcbc; padding: 1px; }");
+            client.println(".sensor { font-weight: bold; /* color:white; background-color: #bcbcbc;*/ padding: 1px; }");
             
             client.println("</style></head><body><h1>Метеостанция на BME280 и ESP8266</h1>");
             client.println("<table><tr><th>Параметр</th><th>Показания</th></tr>");
-            client.println("<tr><td>Температура</td><td><span class=\"sensor\">");
-            client.println(bme.readTemperature());
-            client.println(" *C</span></td></tr>");    
-            client.println("<tr><td>Давление</td><td><span class=\"sensor\">");
-            client.println(bme.readPressure() / 100.0F * 0.7501);
+            client.println("<tr><td>Температура</td><td><span id=\"temp\" class=\"sensor\">");
+            client.println(floatToString(temp, 1));
+            client.println(" °</span></td></tr>");
+            client.println("<tr><td>Давление</td><td><span id=\"press\" class=\"sensor\">");
+            client.println(floatToString(press, 0));
             client.println(" мм рт. ст.</span></td></tr>");
-            client.println("<tr><td>Влажность</td><td><span class=\"sensor\">");
-            client.println(bme.readHumidity());
-            client.println(" %</span></td></tr>"); 
+            client.println("<tr><td>Влажность</td><td><span id=\"humi\" class=\"sensor\">");
+            client.println(floatToString(humi, 0));
+            client.println(" %</span></td></tr></table>"); 
             client.println("</body></html>");
             
             client.println();
@@ -143,4 +140,5 @@ void loop(){
     Serial.println("Client disconnected.");
     Serial.println("");
   }
+delay(1000); 
 }
